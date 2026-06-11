@@ -265,6 +265,16 @@ mod test {
     }
 
     #[test]
+    fn issue_29() {
+        // A leading "00" is treated as an international dialling prefix even
+        // when no reference region is supplied.
+        let parsed = parser::parse(None, "0032474123456").unwrap();
+        assert_eq!(parsed.code().value(), 32);
+        assert_eq!(parsed.national().value(), 474123456);
+        assert_eq!(parsed.code().source(), Source::Idd);
+    }
+
+    #[test]
     fn advisory_1() {
         let res = parser::parse(None, ".;phone-context=");
         assert!(res.is_err(), "{res:?}");
